@@ -2,15 +2,23 @@ on:
   workflow_dispatch:
     inputs:
       buildVariant:
-        type: string
-        description: 'Defines the build type'
-        required: false
-        default: 'staging'
-      environment:
-        type: string
-        description: 'Defines the build type'
-        required: false
-        default: 'staging'
+        type: choice
+        options:
+          - debug
+          - staging
+          - release
+        required: true
+        default: 'debug'
+        description: 'Build variant'
+      flavor:
+        type: choice
+        options:
+          - develop
+          - staging
+          - release
+        required: true
+        default: 'develop'
+        description: 'Flavor'
 
 jobs:
 #  build:
