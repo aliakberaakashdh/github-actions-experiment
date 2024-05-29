@@ -1,0 +1,31 @@
+on:
+  workflow_call:
+    inputs:
+      buildType:
+        description: 'Defines the build type'
+        default: 'staging'
+        required: false
+        type: string
+jobs:
+  build:
+    name: Build and upload APK [DEV]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Assemble debug APK
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleDebug --stacktrace
+          cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/staging' && github.ref != 'refs/heads/develop' }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ inputs.buildType }}
+          path: app/build/outputs/apk/debug/app-debug.apk
