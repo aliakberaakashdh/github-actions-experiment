@@ -1,24 +1,20 @@
 on:
   workflow_dispatch:
     inputs:
-      buildVariant:
-        type: choice
-        options:
-          - debug
-          - staging
-          - release
-        required: true
-        default: 'debug'
-        description: 'Build variant'
-      flavor:
+      buildFlavor:
         type: choice
         options:
           - develop
           - staging
-          - release
-        required: true
         default: 'develop'
-        description: 'Flavor'
+        description: 'Build Flavor'
+      buildType:
+        type: choice
+        options:
+          - debug
+          - release
+        default: 'debug'
+        description: 'Build Type'
 
 jobs:
 #  build:
@@ -47,5 +43,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Env: ${{ github.event.inputs.environment }}" 
-          echo "Branch: ${{ github.event.inputs.buildVariant }}"
+          echo "Env: ${{ github.event.inputs.buildFlavor }}" 
+          echo "Branch: ${{ github.event.inputs.buildType }}"
