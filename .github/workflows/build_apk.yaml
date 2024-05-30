@@ -29,7 +29,6 @@ jobs:
           DEBUG_KEY_PROPERTIES: ${{ secrets.DEBUG_KEY_PROPERTIES }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
           GIT_PROPERTIES: ${{ secrets.GIT_PROPERTIES }}
-          BUILD_TYPE: ${{ github.event.inputs.buildType }}
         run: |
           echo "$SECRETS_PROPERTIES" | base64 -d > secrets.properties
           echo "$ENVIRONMENT_PROPERTIES" | base64 -d > environment.properties
@@ -52,6 +51,7 @@ jobs:
 
       - name: Set APK name and build Arguments
         run: |
+          BUILD_TYPE=${{ github.event.inputs.buildType }}
           if [[ "${{ env.BUILD_TYPE }}" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
           elif [[ "${{ env.BUILD_TYPE }}" == "staging" ]]; then
@@ -61,14 +61,13 @@ jobs:
           fi
           dt=$(date '+%Y-%m-%d')
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
-          APK_NAME="pelican-${{ github.ref_name }}-${{ env.buildType }}-$dt.apk"
+          APK_NAME="pelican-${{ github.ref_name }}-$BUILD_TYPE-$dt.apk"
           echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
-          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILD_TYPE }}.apk"
+          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
 
 
       - name: Print file path
-        run: echo "${{ env.BUILD_TYPE }}" 
-             echo "${{ env.BUILD_COMMAND }}" 
+        run: echo "${{ env.BUILD_COMMAND }}" 
              echo "${{ env.APK_NAME }}" 
              echo "${{ env.UPLOAD_FILE_PATH }}"
 
