@@ -54,15 +54,18 @@ jobs:
           BUILD_TYPE=${{ github.event.inputs.buildType }}
           if [[ "${{ env.BUILD_TYPE }}" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
+          UPLOAD_FILE_PATH="app/build/outputs/apk/debug/app-debug.apk"
           elif [[ "${{ env.BUILD_TYPE }}" == "staging" ]]; then
           BUILD_COMMAND="assembleStaging --stacktrace"
+          UPLOAD_FILE_PATH="app/staging/app-staging.apk"
           else
           BUILD_COMMAND="assembleRelease --debug --info"
+          UPLOAD_FILE_PATH="app/release/app-release.apk"
           fi
           dt=$(date '+%Y-%m-%d')
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           echo "APK_NAME=pelican-${{ github.ref_name }}-$BUILD_TYPE-$dt.apk" >> "$GITHUB_ENV"
-          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk" >> "$GITHUB_ENV"
+          echo "UPLOAD_FILE_PATH=app/$BUILD_TYPE/app-$BUILD_TYPE.apk" >> "$GITHUB_ENV"
 
       - name: Assemble APK
         uses: gradle/gradle-build-action@v2
