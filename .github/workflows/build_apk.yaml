@@ -68,16 +68,15 @@ jobs:
         run: |
           echo "$BUILD_COMMAND"
           echo "$APK_NAME"
-          
 
-#      - name: Assemble APK
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          arguments: assemble${{ github.event.inputs.buildType }} --stacktrace
-#          cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/staging' && github.ref != 'refs/heads/develop' }}
-#
-#      - name: Upload APK
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: app-${{ github.event.inputs.buildType }}
-#          path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Assemble APK
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: "$BUILD_COMMAND"
+          cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: "$APK_NAME"
+          path: app/build/outputs/apk/debug/app-debug.apk
