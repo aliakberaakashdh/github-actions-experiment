@@ -54,9 +54,9 @@ jobs:
       - name: Set APK name and build Arguments
         id: buildData
         run: |
-          if [[ "${github.event.inputs.buildType}" == "debug" ]]; then
+          if [[ "${{ github.event.inputs.buildType }}" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
-          elif [[ "${github.event.inputs.buildType}" == "staging" ]]; then
+          elif [[ "${{ github.event.inputs.buildType} }" == "staging" ]]; then
           BUILD_COMMAND="assembleStaging --stacktrace"
           else
           BUILD_COMMAND="assembleRelease --debug --info"
