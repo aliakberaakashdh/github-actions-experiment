@@ -61,24 +61,17 @@ jobs:
           fi
           dt=$(date '+%Y-%m-%d')
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
-          APK_NAME="pelican-${{ github.ref_name }}-$BUILD_TYPE-$dt.apk"
-          echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
+          echo "APK_NAME=pelican-${{ github.ref_name }}-$BUILD_TYPE-$dt.apk" >> "$GITHUB_ENV"
           echo "UPLOAD_FILE_PATH=app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk" >> "$GITHUB_ENV"
 
+      - name: Assemble APK
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ${{ env.BUILD_COMMAND }}
+          cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
 
-      - name: Print file path
-        run: echo "${{ env.BUILD_COMMAND }}" 
-             echo "${{ env.APK_NAME }}" 
-             echo "${{ env.UPLOAD_FILE_PATH }}"
-
-#      - name: Assemble APK
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          arguments: ${{ env.BUILD_COMMAND }}
-#          cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
-
-#      - name: Upload APK
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: ${{ env.APK_NAME }}
-#          path: ${{ env.UPLOAD_FILE_PATH }}
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APK_NAME }}
+          path: ${{ env.UPLOAD_FILE_PATH }}
