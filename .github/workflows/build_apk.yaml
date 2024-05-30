@@ -63,7 +63,7 @@ jobs:
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           APK_NAME="pelican-${{ github.ref_name }}-$BUILD_TYPE-$dt.apk"
           echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
-          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
+          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk" >> "$GITHUB_ENV"
 
 
       - name: Print file path
