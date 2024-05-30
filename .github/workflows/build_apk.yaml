@@ -29,7 +29,7 @@ jobs:
           DEBUG_KEY_PROPERTIES: ${{ secrets.DEBUG_KEY_PROPERTIES }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
           GIT_PROPERTIES: ${{ secrets.GIT_PROPERTIES }}
-          BUILD_TYPE: ${{ github.event.inputs.buildType }}
+          BUILD_TYPE:
           BRANCH_NAME: ${{ github.ref_name }}
         run: |
           echo "$SECRETS_PROPERTIES" | base64 -d > secrets.properties
@@ -52,23 +52,25 @@ jobs:
         run: echo "$RELEASE_KEYSTORE" | base64 -d > dh_global_pelican
 
       - name: Set APK name and build Arguments
+        id: buildData
         run: |
-          BUILD_COMMAND=""
-          export BUILD_COMMAND
-          
-          if [[ $BUILD_TYPE == "debug" ]]; then
+          if [[ "${github.event.inputs.buildType}" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
-          elif [[ $BUILD_TYPE == "staging" ]]; then
+          elif [[ "${github.event.inputs.buildType}" == "staging" ]]; then
           BUILD_COMMAND="assembleStaging --stacktrace"
           else
           BUILD_COMMAND="assembleRelease --debug --info"
           fi
-          echo "$BUILD_COMMAND"
-          echo "PELICAN-$BRANCH_NAME-$BUILD_TYPE.apk"
+          dt=$(date '+%Y-%m-%d')
+          echo "::set-output name=BUILD_COMMAND::$BUILD_COMMAND"
+          APK_NAME="pelican-$BRANCH_NAME-$BUILD_TYPE-$dt.apk"
+          echo "::set-output name=APK_NAME::$APK_NAME"
 
-      - name: Check the build Command
+      - name: Check the build Command and APK NAME
         run: |
-          echo "$BUILD_COMMAND"
+          echo "${{ steps.buildData.outputs.BUILD_COMMAND }}"
+          echo "${{ steps.buildData.outputs.APK_NAME }}"
+          
 
 #      - name: Assemble APK
 #        uses: gradle/gradle-build-action@v2
