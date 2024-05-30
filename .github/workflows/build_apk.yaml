@@ -64,7 +64,7 @@ jobs:
           BUILD_COMMAND="assembleRelease --debug --info"
           fi
           echo "$BUILD_COMMAND"
-          echo "PELICAN_$BRANCH_NAME_$BUILD_TYPE.apk"
+          echo "PELICAN-$BRANCH_NAME-$BUILD_TYPE.apk"
 
       - name: Check the build Command
         run: |
