@@ -61,7 +61,7 @@ jobs:
           elif [[ $BUILD_TYPE == "staging" ]]; then
           BUILD_COMMAND="assembleStaging --stacktrace"
           else
-          $BUILD_COMMAND="assembleRelease --debug --info"
+          BUILD_COMMAND="assembleRelease --debug --info"
           fi
           echo "$BUILD_COMMAND"
           echo "PELICAN_$BRANCH_NAME_$BUILD_TYPE.apk"
