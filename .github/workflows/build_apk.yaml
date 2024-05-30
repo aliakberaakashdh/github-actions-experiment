@@ -52,14 +52,16 @@ jobs:
 
       - name: Set APK name and build Arguments
         run: |
-          if [[ $BUILD_TYPE == "debug" ]]; then
-            BUILD_COMMAND == Debug
-          elif [[ $BUILD_TYPE == "staging" ]]; then
-            BUILD_COMMAND == Staging
-          else
-            BUILD_COMMAND == Release
-          fi
+          BUILD_COMMAND = ""
           export BUILD_COMMAND
+          
+          if [[ $BUILD_TYPE == "debug" ]]; then
+            BUILD_COMMAND = Debug
+          elif [[ $BUILD_TYPE == "staging" ]]; then
+            BUILD_COMMAND = Staging
+          else
+            BUILD_COMMAND = Release
+          fi
 
       - name: Check the build Command
         run: |
