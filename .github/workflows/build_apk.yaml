@@ -64,6 +64,7 @@ jobs:
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           APK_NAME="pelican-${{ github.ref_name }}-${{ github.event.inputs.buildType }}-$dt.apk"
           echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
+          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILT_TYPE }}.apk"
 
       - name: Assemble APK
         uses: gradle/gradle-build-action@v2
@@ -75,4 +76,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: app/build/outputs/apk/${{ env.BUILD_TYPE }}/${{ env.APK_NAME }}
+          path: ${{ env.UPLOAD_FILE_PATH }}
