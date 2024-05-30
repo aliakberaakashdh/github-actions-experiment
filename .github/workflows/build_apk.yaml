@@ -72,11 +72,11 @@ jobs:
       - name: Assemble APK
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: ${{ BUILD_COMMAND }}
+          arguments: ${{ env.BUILD_COMMAND }}
           cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ APK_NAME }}
+          name: ${{ env.APK_NAME }}
           path: app/build/outputs/apk/debug/app-debug.apk
