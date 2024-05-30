@@ -38,14 +38,14 @@ jobs:
           echo "$GIT_PROPERTIES" | base64 -d > github.properties
 
       - name: Load debug keystore file
-        if: ${{ github.event.inputs.buildType == 'debug' }}
+        if: ${{ env.BUILD_TYPE == 'debug' }}
         env:
           DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
         run: echo "$DEBUG_KEYSTORE" | base64 -d > dh_global_pelican_debug.keystore |
           echo "Running Debug"
 
       - name: Load release keystore file
-        if: ${{ github.event.inputs.buildType != 'debug' }}
+        if: ${{ env.BUILD_TYPE != 'debug' }}
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
         run: echo "$RELEASE_KEYSTORE" | base64 -d > dh_global_pelican
@@ -75,4 +75,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/${{ env.BUILD_TYPE }}/${{ env.APK_NAME }}
