@@ -61,15 +61,15 @@ jobs:
           fi
           dt=$(date '+%Y-%m-%d')
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
-          APK_NAME="pelican-${{ github.ref_name }}-${{ github.event.inputs.buildType }}-$dt.apk"
+          APK_NAME="pelican-${{ github.ref_name }}-${{ env.buildType }}-$dt.apk"
           echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
           echo "UPLOAD_FILE_PATH=app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILD_TYPE }}.apk"
 
 
       - name: Print file path
-        run: echo "${{ env.BUILD_TYPE }}" |
-             echo "${{ env.BUILD_COMMAND }}" |
-             echo "${{ env.APK_NAME }}" |
+        run: echo "${{ env.BUILD_TYPE }}" 
+             echo "${{ env.BUILD_COMMAND }}" 
+             echo "${{ env.APK_NAME }}" 
              echo "${{ env.UPLOAD_FILE_PATH }}"
 
 #      - name: Assemble APK
