@@ -1,47 +1,63 @@
 on:
   workflow_dispatch:
     inputs:
-      buildFlavor:
-        type: choice
-        options:
-          - develop
-          - staging
-        default: 'develop'
-        description: 'Build Flavor'
       buildType:
         type: choice
         options:
           - debug
+          - staging
           - release
         default: 'debug'
         description: 'Build Type'
 
 jobs:
-#  build:
-#    name: Build and upload APK [DEV]
-#    runs-on: ubuntu-20.04
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Set up JDK
-#        uses: actions/setup-java@v3
-#        with:
-#          distribution: temurin
-#          java-version: 17
-#
+  build:
+    name: Build and upload APK [DEV]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+#      - name: Load *.properties files
+#        env:
+#          SECRETS_PROPERTIES: ${{ secrets.SECRETS_PROPERTIES }}
+#          ENVIRONMENT_PROPERTIES: ${{ secrets.ENVIRONMENT_PROPERTIES }}
+#          DEBUG_KEY_PROPERTIES: ${{ secrets.DEBUG_KEY_PROPERTIES }}
+#          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+#          GIT_PROPERTIES: ${{ secrets.GIT_PROPERTIES }}
+#        run: |
+#          echo "$SECRETS_PROPERTIES" | base64 -d > secrets.properties
+#          echo "$ENVIRONMENT_PROPERTIES" | base64 -d > environment.properties
+#          echo "$DEBUG_KEY_PROPERTIES" | base64 -d > key_debug.properties
+#          echo "$KEY_PROPERTIES" | base64 -d > key.properties
+#          echo "$GIT_PROPERTIES" | base64 -d > github.properties
+
+      - name: Load debug keystore file
+        if: ${{ github.event.inputs.buildType == 'debug' }}
+#        env:
+#          DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
+        run: #echo "$DEBUG_KEYSTORE" | base64 -d > dh_global_pelican_debug.keystore |
+          echo "Running Debug"
+
+      - name: Load release keystore file
+        if: ${{ github.event.inputs.buildType != 'debug' }}
+#        env:
+#          RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
+        run: #echo "$RELEASE_KEYSTORE" | base64 -d > dh_global_pelican
+          echo "Running Staging / Release"
+
 #      - name: Assemble debug APK
 #        uses: gradle/gradle-build-action@v2
 #        with:
-#          arguments: assembleDebug --stacktrace
+#          arguments: assemble${{ github.event.inputs.buildType }} --stacktrace
 #          cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/staging' && github.ref != 'refs/heads/develop' }}
 #
 #      - name: Upload APK
 #        uses: actions/upload-artifact@v4
 #        with:
-#          name: app-${{ inputs.buildType }}
+#          name: app-${{ github.event.inputs.buildType }}
 #          path: app/build/outputs/apk/debug/app-debug.apk
-  printInputs:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Env: ${{ github.event.inputs.buildFlavor }}" 
-          echo "Branch: ${{ github.event.inputs.buildType }}"
