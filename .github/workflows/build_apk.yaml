@@ -38,21 +38,32 @@ jobs:
           echo "$GIT_PROPERTIES" | base64 -d > github.properties
 
       - name: Load debug keystore file
-        if: $BUILD_TYPE == 'debug'
+        if: ${{ github.event.inputs.buildType == 'debug' }}
         env:
           DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
         run: echo "$DEBUG_KEYSTORE" | base64 -d > dh_global_pelican_debug.keystore |
           echo "Running Debug"
 
       - name: Load release keystore file
-        if: $BUILD_TYPE != 'debug'
+        if: ${{ github.event.inputs.buildType != 'debug' }}
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
         run: echo "$RELEASE_KEYSTORE" | base64 -d > dh_global_pelican
 
-#      - name: Set APK name and build Arguments
-#        run:
-#
+      - name: Set APK name and build Arguments
+        run: |
+          if [[ $BUILD_TYPE == "debug" ]]; then
+            BUILD_COMMAND == Debug
+          elif [[ $BUILD_TYPE == "staging" ]]; then
+            BUILD_COMMAND == Staging
+          else
+            BUILD_COMMAND == Release
+          fi
+          export BUILD_COMMAND
+
+      - name: Check the build Command
+        run: |
+          echo "assemble$BUILD_COMMAND -- stacktrace"
 
 #      - name: Assemble APK
 #        uses: gradle/gradle-build-action@v2
