@@ -29,6 +29,7 @@ jobs:
           DEBUG_KEY_PROPERTIES: ${{ secrets.DEBUG_KEY_PROPERTIES }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
           GIT_PROPERTIES: ${{ secrets.GIT_PROPERTIES }}
+          BUILD_TYPE: github.event.inputs.buildType
         run: |
           echo "$SECRETS_PROPERTIES" | base64 -d > secrets.properties
           echo "$ENVIRONMENT_PROPERTIES" | base64 -d > environment.properties
@@ -52,9 +53,9 @@ jobs:
       - name: Set APK name and build Arguments
         id: buildData
         run: |
-          if [[ "${{ github.event.inputs.buildType }}" == "debug" ]]; then
+          if [[ "${{ env.BUILD_TYPE }}" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
-          elif [[ "${{ github.event.inputs.buildType }}" == "staging" ]]; then
+          elif [[ "${{ env.BUILD_TYPE }}" == "staging" ]]; then
           BUILD_COMMAND="assembleStaging --stacktrace"
           else
           BUILD_COMMAND="assembleRelease --debug --info"
@@ -63,11 +64,6 @@ jobs:
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           APK_NAME="pelican-${{ github.ref_name }}-${{ github.event.inputs.buildType }}-$dt.apk"
           echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
-
-      - name: Check the build Command and APK NAME
-        run: |
-          echo "$BUILD_COMMAND"
-          echo "$APK_NAME"
 
       - name: Assemble APK
         uses: gradle/gradle-build-action@v2
