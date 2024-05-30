@@ -60,14 +60,14 @@ jobs:
           BUILD_COMMAND="assembleRelease --debug --info"
           fi
           dt=$(date '+%Y-%m-%d')
-          echo "::set-output name=BUILD_COMMAND::$BUILD_COMMAND"
+          echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           APK_NAME="pelican-${{ github.ref_name }}-${{ github.event.inputs.buildType }}-$dt.apk"
-          echo "::set-output name=APK_NAME::$APK_NAME"
+          echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
 
       - name: Check the build Command and APK NAME
         run: |
-          echo "${{ steps.buildData.outputs.BUILD_COMMAND }}"
-          echo "${{ steps.buildData.outputs.APK_NAME }}"
+          echo "$BUILD_COMMAND"
+          echo "$APK_NAME"
           
 
 #      - name: Assemble APK
