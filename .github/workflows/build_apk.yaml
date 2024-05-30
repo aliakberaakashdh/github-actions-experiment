@@ -37,14 +37,14 @@ jobs:
           echo "$GIT_PROPERTIES" | base64 -d > github.properties
 
       - name: Load debug keystore file
-        if: ${{ env.BUILD_TYPE == 'debug' }}
+        if: ${{ github.event.inputs.buildType == 'debug' }}
         env:
           DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
         run: echo "$DEBUG_KEYSTORE" | base64 -d > dh_global_pelican_debug.keystore |
           echo "Running Debug"
 
       - name: Load release keystore file
-        if: ${{ env.BUILD_TYPE != 'debug' }}
+        if: ${{ github.event.inputs.buildType != 'debug' }}
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
         run: echo "$RELEASE_KEYSTORE" | base64 -d > dh_global_pelican
