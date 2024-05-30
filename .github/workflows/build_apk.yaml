@@ -29,7 +29,7 @@ jobs:
           DEBUG_KEY_PROPERTIES: ${{ secrets.DEBUG_KEY_PROPERTIES }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
           GIT_PROPERTIES: ${{ secrets.GIT_PROPERTIES }}
-          BUILD_TYPE: github.event.inputs.buildType
+          BUILD_TYPE: ${{ github.event.inputs.buildType }}
         run: |
           echo "$SECRETS_PROPERTIES" | base64 -d > secrets.properties
           echo "$ENVIRONMENT_PROPERTIES" | base64 -d > environment.properties
@@ -51,7 +51,6 @@ jobs:
         run: echo "$RELEASE_KEYSTORE" | base64 -d > dh_global_pelican
 
       - name: Set APK name and build Arguments
-        id: buildData
         run: |
           if [[ "${{ env.BUILD_TYPE }}" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
@@ -64,16 +63,23 @@ jobs:
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           APK_NAME="pelican-${{ github.ref_name }}-${{ github.event.inputs.buildType }}-$dt.apk"
           echo "APK_NAME=$APK_NAME" >> "$GITHUB_ENV"
-          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILT_TYPE }}.apk"
+          echo "UPLOAD_FILE_PATH=app/build/outputs/apk/${{ env.BUILD_TYPE }}/app-${{ env.BUILD_TYPE }}.apk"
 
-      - name: Assemble APK
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: ${{ env.BUILD_COMMAND }}
-          cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.APK_NAME }}
-          path: ${{ env.UPLOAD_FILE_PATH }}
+      - name: Print file path
+        run: echo "${{ env.BUILD_TYPE }}" |
+             echo "${{ env.BUILD_COMMAND }}" |
+             echo "${{ env.APK_NAME }}" |
+             echo "${{ env.UPLOAD_FILE_PATH }}"
+
+#      - name: Assemble APK
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: ${{ env.BUILD_COMMAND }}
+#          cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
+
+#      - name: Upload APK
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: ${{ env.APK_NAME }}
+#          path: ${{ env.UPLOAD_FILE_PATH }}
