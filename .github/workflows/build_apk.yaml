@@ -29,8 +29,6 @@ jobs:
           DEBUG_KEY_PROPERTIES: ${{ secrets.DEBUG_KEY_PROPERTIES }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
           GIT_PROPERTIES: ${{ secrets.GIT_PROPERTIES }}
-          BUILD_TYPE:
-          BRANCH_NAME: ${{ github.ref_name }}
         run: |
           echo "$SECRETS_PROPERTIES" | base64 -d > secrets.properties
           echo "$ENVIRONMENT_PROPERTIES" | base64 -d > environment.properties
@@ -63,7 +61,7 @@ jobs:
           fi
           dt=$(date '+%Y-%m-%d')
           echo "::set-output name=BUILD_COMMAND::$BUILD_COMMAND"
-          APK_NAME="pelican-$BRANCH_NAME-$BUILD_TYPE-$dt.apk"
+          APK_NAME="pelican-${{ github.ref_name }}-${{ github.event.inputs.buildType }}-$dt.apk"
           echo "::set-output name=APK_NAME::$APK_NAME"
 
       - name: Check the build Command and APK NAME
