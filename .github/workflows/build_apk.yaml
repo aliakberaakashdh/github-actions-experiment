@@ -71,9 +71,9 @@ jobs:
 
       - name: Rename APK
         run: |
+          BUILD_TYPE=${{ github.event.inputs.buildType }}
           mkdir -p "app/build/outputs/apk/$BUILD_TYPE"
           touch "app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
-          BUILD_TYPE=${{ github.event.inputs.buildType }}
           OLD_FILE_PATH="app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
           NEW_FILE_PATH="app/build/outputs/apk/$BUILD_TYPE/$APK_NAME"
           echo "$OLD_FILE_PATH"
