@@ -51,10 +51,10 @@ jobs:
 
       - name: Set APK name and build Arguments
         run: |
-          echo "BUILD_TYPE=${{ github.event.inputs.buildType }}" >> "$GITHUB_ENV"
-          if [[ "${{ env.BUILD_TYPE }}" == "debug" ]]; then
+          BUILD_TYPE=${{ github.event.inputs.buildType }}
+          if [[ "$BUILD_TYPE" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
-          elif [[ "${{ env.BUILD_TYPE }}" == "staging" ]]; then
+          elif [[ "$BUILD_TYPE" == "staging" ]]; then
           BUILD_COMMAND="assembleStaging --stacktrace"
           else
           BUILD_COMMAND="assembleRelease --debug --info"
@@ -71,9 +71,12 @@ jobs:
 
       - name: Rename APK
         run:
-          UPLOAD_FILE_PATH="app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
+          BUILD_TYPE=${{ github.event.inputs.buildType }}
+          OLD_FILE_PATH="app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
           echo "NEW_FILE_PATH=app/build/outputs/apk/$BUILD_TYPE/$APK_NAME" >> "$GITHUB_ENV"
-          mv "$UPLOAD_FILE_PATH" "$NEW_FILE_PATH"
+          echo "${{ OLD_FILE_PATH }}"
+          echo "${{ NEW_FILE_PATH }}"
+          mv "$OLD_FILE_PATH" "$NEW_FILE_PATH"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
