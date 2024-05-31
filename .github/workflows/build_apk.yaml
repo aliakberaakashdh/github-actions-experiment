@@ -54,18 +54,17 @@ jobs:
           BUILD_TYPE=${{ github.event.inputs.buildType }}
           if [[ "${{ env.BUILD_TYPE }}" == "debug" ]]; then
           BUILD_COMMAND="assembleDebug --stacktrace"
-          UPLOAD_FILE_PATH="app/build/outputs/apk/debug/app-debug.apk"
           elif [[ "${{ env.BUILD_TYPE }}" == "staging" ]]; then
           BUILD_COMMAND="assembleStaging --stacktrace"
-          UPLOAD_FILE_PATH="app/staging/app-staging.apk"
           else
           BUILD_COMMAND="assembleRelease --debug --info"
-          UPLOAD_FILE_PATH="app/release/app-release.apk"
           fi
           dt=$(date '+%Y-%m-%d')
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           echo "APK_NAME=pelican-${{ github.ref_name }}-$BUILD_TYPE-$dt.apk" >> "$GITHUB_ENV"
-          echo "UPLOAD_FILE_PATH=$UPLOAD_FILE_PATH" >> "$GITHUB_ENV"
+          UPLOAD_FILE_PATH="app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
+          echo "NEW_FILE_PATH=app/build/outputs/apk/$BUILD_TYPE/$APK_NAME" >> "$GITHUB_ENV"
+          mv $UPLOAD_FILE_PATH $NEW_FILE_PATH
 
       - name: Assemble APK
         uses: gradle/gradle-build-action@v2
@@ -77,4 +76,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: ${{ env.UPLOAD_FILE_PATH }}
+          path: ${{ env.NEW_FILE_PATH }}
