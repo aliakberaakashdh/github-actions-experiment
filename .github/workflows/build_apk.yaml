@@ -63,21 +63,17 @@ jobs:
           echo "BUILD_COMMAND=$BUILD_COMMAND" >> "$GITHUB_ENV"
           echo "APK_NAME=pelican-${{ github.ref_name }}-$BUILD_TYPE-$dt.apk" >> "$GITHUB_ENV"
 
-#      - name: Assemble APK
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          arguments: ${{ env.BUILD_COMMAND }}
-#          cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
+      - name: Assemble APK
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ${{ env.BUILD_COMMAND }}
+          cache-read-only: ${{ github.ref_name != 'master' && github.ref_name != 'staging' && github.ref_name != 'develop' }}
 
       - name: Rename APK
         run: |
           BUILD_TYPE=${{ github.event.inputs.buildType }}
-          mkdir -p "app/build/outputs/apk/$BUILD_TYPE"
-          touch "app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
           OLD_FILE_PATH="app/build/outputs/apk/$BUILD_TYPE/app-$BUILD_TYPE.apk"
           NEW_FILE_PATH="app/build/outputs/apk/$BUILD_TYPE/$APK_NAME"
-          echo "$OLD_FILE_PATH"
-          echo "$NEW_FILE_PATH"
           mv "$OLD_FILE_PATH" "$NEW_FILE_PATH"
           echo "NEW_FILE_PATH=$NEW_FILE_PATH" >> "$GITHUB_ENV"
 
